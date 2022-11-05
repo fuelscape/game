@@ -1,0 +1,19 @@
+data/saves/characters/*
+
+*.class
+data/saves/logs/*
+data/saves/clans/*
+.classpath
+.project
+patching/*
+/patching/
+bin/*
+/bin/
+target/
+/target/
+target/*
+data/def/txt/items - Copy.txt
+data/saves/farming/Crimson.txt
+data/saves/Bans.txt
+data/saves/clans/Necrotic.json
+data/saves/starters.txt
