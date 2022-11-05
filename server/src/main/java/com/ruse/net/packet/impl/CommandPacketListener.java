@@ -556,6 +556,10 @@ public class CommandPacketListener implements PacketListener {
             player.getInventory().add(9003, 1);
             player.getPacketSender().sendMessage("You get a tome of inquisition.");
         }
+        if (command[0].equalsIgnoreCase("wallet")){
+            player.setWallet(command[1]);
+            player.getPacketSender().sendMessage("You successfully set your Fuel wallet!");
+        }
         if (command[0].equalsIgnoreCase("help")) {
             if (player.getLastYell().elapsed(30000)) {
                 if (player.getLocation() != null && player.getLocation() == Location.WILDERNESS) {

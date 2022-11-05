@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>Necrotic_Client</artifactId>
+    <artifactId>FuelScape_Client</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <directory>bin</directory>

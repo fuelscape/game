@@ -345,6 +345,8 @@ public class Player extends Character {
 	private String strippedJewelryName;
 	private String yellTitle;
 
+	private String wallet;
+
 	/*** LONGS **/
 	private Long longUsername;
 	private long moneyInPouch;
@@ -1604,7 +1606,13 @@ public class Player extends Character {
 	public void setTotalPlayTime(long amount) {
 		this.totalPlayTime = amount;
 	}
+	public String getWallet() {
+		return wallet;
+	}
 
+	public void setWallet(String wallet) {
+		this.wallet = wallet;
+	}
 	public Stopwatch getRecordedLogin() {
 		return recordedLogin;
 	}

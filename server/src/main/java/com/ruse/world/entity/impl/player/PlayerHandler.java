@@ -1,5 +1,6 @@
 package com.ruse.world.entity.impl.player;
 
+import com.ruse.model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.ruse.GameServer;
@@ -15,17 +16,12 @@ import com.ruse.engine.task.impl.PlayerSpecialAmountTask;
 import com.ruse.engine.task.impl.PrayerRenewalPotionTask;
 import com.ruse.engine.task.impl.StaffOfLightSpecialAttackTask;
 import com.ruse.engine.task.impl.SummoningRegenPlayerConstitutionTask;
-import com.ruse.model.Flag;
-import com.ruse.model.Locations;
 import com.ruse.model.Locations.Location;
-import com.ruse.model.MessageType;
-import com.ruse.model.PlayerRights;
-import com.ruse.model.Position;
-import com.ruse.model.Skill;
 import com.ruse.model.container.impl.Bank;
 import com.ruse.model.container.impl.Equipment;
 import com.ruse.model.definitions.WeaponAnimations;
 import com.ruse.model.definitions.WeaponInterfaces;
+import com.ruse.model.GameMode;
 import com.ruse.net.PlayerSession;
 import com.ruse.net.SessionState;
 import com.ruse.net.security.ConnectionHandler;
@@ -53,6 +49,20 @@ import com.ruse.world.content.minigames.impl.Barrows;
 import com.ruse.world.content.skill.impl.hunter.Hunter;
 import com.ruse.world.content.skill.impl.slayer.Slayer;
 import com.ruse.world.entity.impl.GlobalItemSpawner;
+import com.ruse.GameSettings;
+import com.ruse.engine.task.Task;
+import com.ruse.engine.task.TaskManager;
+import com.ruse.model.Direction;
+import com.ruse.model.GameMode;
+import com.ruse.model.Position;
+import com.ruse.net.security.ConnectionHandler;
+import com.ruse.util.Misc;
+import com.ruse.world.World;
+import com.ruse.world.content.dialogue.Dialogue;
+import com.ruse.world.content.dialogue.DialogueExpression;
+import com.ruse.world.content.dialogue.DialogueType;
+import com.ruse.world.entity.impl.player.Player;
+
 
 public class PlayerHandler {
 
@@ -150,13 +160,18 @@ public class PlayerHandler {
 			TaskManager.submit(new BonusExperienceTask(player));
 		}
 
-		//Update appearance
+		//Update appearancez
 		
 
 		//Others
 		Lottery.onLogin(player);
 		Locations.login(player);
 		player.getPacketSender().sendMessage("@bla@Welcome to "+GameSettings.RSPS_NAME+"!");
+		System.out.println("wallet "+ player.getWallet());
+		if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null"){
+			player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
+			player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
+		}
 		if(player.experienceLocked())
 			player.getPacketSender().sendMessage(MessageType.SERVER_ALERT, " @red@Warning: your experience is currently locked.");
 		
@@ -171,11 +186,7 @@ public class PlayerHandler {
 			player.setSalt(BCrypt.gensalt(GameSettings.BCRYPT_ROUNDS));
 			System.out.println(player.getUsername()+" needs a new salt. Generated one, rounds ("+GameSettings.BCRYPT_ROUNDS+")");
 		}
-		
-		if(Misc.isWeekend()) {
-			player.getPacketSender().sendMessage("<img=10> <col=ff00ff>"+GameSettings.RSPS_NAME+" currently has DOUBLE EXP active, and it STACKS with vote scrolls! Enjoy!");
-			//player.getPacketSender().sendMessage("<img=10> <col=ff00ff>Oh, and this weekend we're having double vote points as well!");
-		}
+
 		
 		if (Wildywyrm.wyrmAlive) {
 			Wildywyrm.sendHint(player);
@@ -190,9 +201,18 @@ public class PlayerHandler {
 
 		//New player
 		if(player.newPlayer()) {
-			player.setClanChatName("necrotic");
-			player.setPlayerLocked(true).setDialogueActionId(45);
-			DialogueManager.start(player, 81);
+			//player.setClanChatName("FuelScape");
+			player.setNewPlayer(false);
+			player.getInventory().add(995, 1000000).add(1153, 1).add(1115, 1).add(1067, 1).add(1323, 1).add(1191, 1).add(841, 1).add(882, 1000).add(1167, 1).add(1129, 1).add(1095, 1).add(1063, 1).add(1379, 1).add(556, 1000).add(558, 1000).add(557, 1000).add(554, 1000).add(555, 1000).add(1351, 1).add(1265, 1).add(1712, 1).add(11118, 1).add(1007, 1).add(386, 100).add(9003, 1);
+			player.setReceivedStarter(true);
+			player.getPacketSender().sendMessage("You claim your normal starter kit!");
+			ConnectionHandler.addStarter(player.getHostAddress(), true);
+			World.sendMessage("<shad=1><col=F5FF3B><img=10> "+player.getUsername()+" has just logged in for the first time!");
+			player.getPacketSender().sendInterface(3559);
+			player.getAppearance().setCanChangeAppearance(true);
+			player.setPlayerLocked(false);
+			player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
+			player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
 		}
 		
 		ClanChatManager.handleLogin(player);

@@ -208,7 +208,12 @@ public class CustomObjects {
 	//NOTE: You must add to the client's customobjects array to make them spawn, this is just clipping!
 	private static final int[][] CLIENT_OBJECTS = {
     		/* Start of Woodcutting Area Fixes */
-    		{1315, 2558, 3869, 0, 0},
+    		{26972, 2530, 4780, 0, 0},
+			{21, 2520, 4770, 0, 0},
+			{62, 2520, 4780, 0, 0},
+			{416, 2530, 4770, 0, 0},
+			{4142, 2533, 4770, 0, 0},
+			{1315, 2558, 3869, 0, 0},
     		{1315, 2553, 3863, 0, 0},
     		{1315, 2551, 3860, 0, 0},
     		{1315, 2551, 3871, 0, 0},

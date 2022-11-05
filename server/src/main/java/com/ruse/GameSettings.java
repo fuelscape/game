@@ -13,7 +13,7 @@ public class GameSettings {
 	 * Ctrl + Click on variable names or datatypes for references.
 	 * Ctrl + F12 for an overview of this package.
 	 */
-	public static final String RSPS_NAME = "Necrotic";
+	public static final String RSPS_NAME = "FuelScape";
 
 	/**
 	 * The game port
@@ -33,8 +33,8 @@ public class GameSettings {
 	 *
 	 * The default position
 	 */
-	public static final Position DEFAULT_POSITION = new Position(3669, 2980);
-	public static final Position HOME_CORDS = new Position(3669, 2980, 0);
+	public static final Position DEFAULT_POSITION = new Position(2525, 4776);
+	public static final Position HOME_CORDS = new Position(2525, 4776, 0);
 
 	/**
 	 * Processing the engine

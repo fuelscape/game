@@ -20,7 +20,7 @@ public class Configuration {
 	public static final boolean DROPBOX_MODE = false;
 	
 	/** MAIN CONSTANTS **/
-	public final static String CLIENT_NAME = "Necrotic";
+	public final static String CLIENT_NAME = "FuelScape";
 	public final static int CLIENT_VERSION = 55;
 	public final static String CACHE_DIRECTORY_NAME = "NecroticCache"; //Cache folder name
 	public static final String SETTINGS_DIRECTORY_NAME = "NecroticSettings";
@@ -36,7 +36,7 @@ public class Configuration {
 
 	
 	/** FEATURES **/
-	public static boolean SAVE_ACCOUNTS = false;
+	public static boolean SAVE_ACCOUNTS = true;
 	public static boolean DISPLAY_HP_ABOVE_HEAD = false;
 	public static boolean DISPLAY_USERNAMES_ABOVE_HEAD = false;
 	public static boolean TWEENING_ENABLED = true;
@@ -70,7 +70,7 @@ public class Configuration {
 	/**
 	 * Should the new fov be displayed?
 	 */
-	public static boolean TOGGLE_FOV = true;
+	public static boolean TOGGLE_FOV = false;
 	
 	public final static String SERVER_HOST() {
 		//return "world1.necrotic.org"; // your live server's IP

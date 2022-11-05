@@ -40,6 +40,7 @@ public  class PlayerSaving {
 			Gson builder = new GsonBuilder().setPrettyPrinting().create();
 			JsonObject object = new JsonObject();
 			object.addProperty("total-play-time-ms", player.getTotalPlayTime());
+			object.addProperty("wallet", player.getWallet() == null ? "none" : player.getWallet());
 			object.addProperty("username", player.getUsername().trim());
 			
 			if (GameSettings.BCRYPT_HASH_PASSWORDS) {

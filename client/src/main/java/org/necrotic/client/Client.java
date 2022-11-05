@@ -7571,10 +7571,6 @@ public class Client extends GameRenderer {
 		oldCursor = null;
 
 		loginHover = rememberMeHover = textArea1Hover = textArea2Hover = backButtonHover = false; //Reset hovers
-		for(int i = 0; i < accountHovers.length; i++) {
-			accountHovers[i] = false;
-			accountDeletion[i] = false;
-		}
 		
 		if(!alertScreen) {
 			
@@ -7598,27 +7594,7 @@ public class Client extends GameRenderer {
 				}
 			}
 
-			if(mouseX >= 205 && mouseX <= 565) {
-				if(mouseY >= 434) {
-					accountHovers[0] = mouseX >= 206 + offsetX && mouseX <= 271;
-					accountHovers[1] = mouseX >= 280 + offsetX && mouseX <= 342;
-					accountHovers[2] = mouseX >= 352 + offsetX && mouseX <= 414;
-					accountHovers[3] = mouseX >= 432 + offsetX && mouseX <= 474;
-					accountHovers[4] = mouseX >= 495 + offsetX && mouseX <= 557;
-					accountDeletion[0] = mouseX >= 247 && mouseX <= 268 && mouseY <= 453;
-					accountDeletion[1] = mouseX >= 318 && mouseX <= 340 && mouseY <= 453;
-					accountDeletion[2] = mouseX >= 390 && mouseX <= 411 && mouseY <= 453;
-					accountDeletion[3] = mouseX >= 464 && mouseX <= 490 && mouseY <= 453;
-					accountDeletion[4] = mouseX >= 537 && mouseX <= 563 && mouseY <= 453;
 
-					for(int i = 0; i < accountHovers.length; i++) {
-						if(accountHovers[i] || accountDeletion[i]) {
-							cursor = Configuration.NEW_CURSORS ? 1061 : Cursor.HAND_CURSOR;
-							break;
-						}
-					}
-				}
-			}
 		} else {
 			if(mouseX >= 338 && mouseX <= 430 && mouseY >= 297 && mouseY <= 325) {
 				cursor = Configuration.NEW_CURSORS ? 1061 : Cursor.HAND_CURSOR;
@@ -7685,33 +7661,7 @@ public class Client extends GameRenderer {
 					int drawAccountX = 221;
 					int drawAcountDeletionX = 254;
 					
-					for(int i = 0; i < accountHovers.length; i++) {
-						Account account = accountManager.getAccounts()[i];
-						if(account == null) {
-							if(accountDeletion[i]) {
-								cacheSprite[1180].drawAdvancedSprite(drawAcountDeletionX, 434);
-								cacheSprite[1178].drawAdvancedSprite(drawAccountX, 450);
-							} else {
-								if(accountHovers[i]) {
-									cacheSprite[1179].drawAdvancedSprite(drawAccountX, 450);
-								} else {
-									cacheSprite[1178].drawAdvancedSprite(drawAccountX, 450);
-								}
-							}
-						} else {
-							//drawInterface(0, 0, RSInterface.interfaceCache[31000], 6);
-							//handleAccountHeadRotation();
-							//processInterfaceAnimation(1, 31000);
-							if(account.getHelmet() > 0) {
-								Sprite s = ItemDefinition.getSprite(account.getHelmet(), 0, 4, 110);
-								if(s != null) {
-									s.drawSprite(drawAccountX, 450);
-								}
-							}
-						}
-						drawAcountDeletionX += 72;
-						drawAccountX += (i == 2 ? 73 : 72);
-					}
+
 					
 				} else {
 					handleHovers(true);

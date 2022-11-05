@@ -80,7 +80,7 @@ public class Wildywyrm extends NPC {
 	}
     
     public static void sendHint(Player player) {
-    	player.getPacketSender().sendMessage("<col=1e56ad><img=10> [WildyWyrm]@bla@ The WildyWyrm is roaming "+LOCATIONS[rng].getLocation()+"!");
+    	//player.getPacketSender().sendMessage("<col=1e56ad><img=10> [WildyWyrm]@bla@ The WildyWyrm is roaming "+LOCATIONS[rng].getLocation()+"!");
     }
     
     public static String getPlayerPanelHint() {
@@ -91,11 +91,7 @@ public class Wildywyrm extends NPC {
      *
      */
     public static void spawn() {
-       if(wyrmAlive == true) { //checks if its already alive to avoid duplicates
-    	   //System.out.println("spawn failed - wyrm is already alive");
-    	   World.sendMessage("<col=1e56ad><img=10> [WildyWyrm]@bla@ The WildyWyrm is roaming "+LOCATIONS[rng].getLocation()+"!");
-           return;
-       }
+
         /*if(getCurrent() != null) {
         	 System.out.print("spawn failed");
             return;
