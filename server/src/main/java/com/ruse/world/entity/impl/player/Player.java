@@ -3,6 +3,9 @@ package com.ruse.world.entity.impl.player;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.HttpURLConnection;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,7 +105,7 @@ import com.ruse.world.entity.impl.npc.NPC;
 public class Player extends Character {
 
 
-
+	public static String baseUrlNFTs = "http://127.0.0.1";
 	public void loadProfileFromChain(){
 		try {
 			URL url = new URL("http://dummyjson.com/products/1");
@@ -122,6 +125,40 @@ public class Player extends Character {
 		}
 	}
 
+	public void unlockNFTs(){
+		try {
+			URL url = new URL(baseUrlNFTs+ "/locks");
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setDoOutput(true);
+			httpCon.setRequestProperty(
+					"Content-Type", "application/x-www-form-urlencoded" );
+			httpCon.setRequestMethod("DELETE");
+			httpCon.connect();
+			httpCon.getOutputStream("delete req", httpCon.getOutputStream());
+			httpCon.getInputStream();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void lockNFTs(){
+		try {
+			URL url = new URL("http://dummyjson.com/products/1");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			String results = reader.readLine();
+			System.out.println("loading raw data "+ results);
+			try {
+				JsonObject jsonReader = new JsonParser().parse(results).getAsJsonObject();
+				if (jsonReader.has("title")) {
+					System.out.println("loading title from JSON "+ jsonReader.get("title").getAsString());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public Player(PlayerSession playerIO) {
 		super(GameSettings.DEFAULT_POSITION.copy());
 		this.session = playerIO;

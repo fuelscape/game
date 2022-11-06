@@ -141,7 +141,21 @@ public final class ItemDefinition {
 			itemDef.actions = new String[] { null, "Wear", null, null, "Drop" };
 			itemDef.modelID = 33009;
 			break;
-			
+
+		case 2:
+			itemDef.name = "Bolt of Fuel";
+			itemDef.modelZoom = 900;
+			itemDef.modelRotation1 = 393;
+			itemDef.modelRotation2 = 1589;
+			itemDef.modelOffset1 = -9;
+			itemDef.modelOffsetY = -12;
+			itemDef.groundActions = new String[] { null, null, "Take", null, null };
+			itemDef.actions = new String[] { null, "Grasp", "Charge", null, "Drop" };
+			itemDef.modelID = 1;
+			itemDef.maleWearId = 1;
+			itemDef.femaleWearId = 1;
+			break;
+
 		case 2714:
 			itemDef.name = "Gold Casket";
 			itemDef.actions = new String [] { "Loot", null, null, null, "Drop" };

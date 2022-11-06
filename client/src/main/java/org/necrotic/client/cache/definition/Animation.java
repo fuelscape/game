@@ -35,7 +35,7 @@ public final class Animation {
 			if (j == 9677) {
 				//System.out.println(anims[9677]);
 			}
-			if (j == 5036) {
+			if (j == 1) {
 				cache[j] = new Animation();
 				cache[j].frameCount = 9;
 				cache[j].loopDelay = -1;

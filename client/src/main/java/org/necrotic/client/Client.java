@@ -375,7 +375,7 @@ public class Client extends GameRenderer {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error packing cache index " + cacheIndex + ".");
+			System.out.println("Error packing cache index " + cacheIndex + "." + e);
 		}
 		System.out.println("Finished repacking " + cacheIndex + ".");
 	}
@@ -1796,10 +1796,10 @@ public class Client extends GameRenderer {
 		case "repackmaps":
 			repackCache(PackingTypes.MAPS);
 			break;
-		case "repackindex4":
-			repackCacheIndex(4);
-			//loadRegion();
-			break;
+		case "repackindex1":
+				repackCacheIndex(1);
+			case "repackindex4":
+				repackCacheIndex(4);
 		case "hitmarks":
 			Configuration.NEW_HITMARKS = !Configuration.NEW_HITMARKS;
 			break;
@@ -15907,6 +15907,7 @@ public class Client extends GameRenderer {
 		}
 		
 		try {
+
 			////drawSmoothLoading(10, "Getting archives...");
 			titleStreamLoader = getArchive(1, "title screen", "title", expectedCRCs[1], 25);
 			smallText = new TextDrawingArea(false, "p11_full", titleStreamLoader);
@@ -16154,6 +16155,7 @@ public class Client extends GameRenderer {
 			Varp.load(streamLoader);
 			VarBit.unpackConfig(streamLoader);
 			ItemDefinition.isMembers = isMembers;
+
 			////drawSmoothLoading(80, "Unpacked config!");
 			// ItemDefinition.dumpItemModelsForId(13653);
 			// onDemandFetcher.dump();

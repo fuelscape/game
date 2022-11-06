@@ -38,7 +38,7 @@ public final class WeaponAnimations {
 		int playerTurn180Index = 0x334;
 		int playerTurn90CWIndex = 0x335;
 		int playerTurn90CCWIndex = 0x336;
-		if (weaponName.contains("halberd") || weaponName.contains("guthan")) {
+		if (weaponName.contains("halberd") || weaponName.contains("guthan") || weaponName.contains("fuel")) {
 			playerStandIndex = 809;
 			playerWalkIndex = 1146;
 			playerRunIndex = 1210;
@@ -51,7 +51,7 @@ public final class WeaponAnimations {
 			playerWalkIndex = 1836;
 			playerRunIndex = 1836;
 		}
-		else if (weaponName.contains("dharok") || (weaponName.contains("barb axe"))) {
+		else if ( weaponName.contains("dharok") || (weaponName.contains("barb axe"))) {
 			playerStandIndex = 0x811;
 			playerWalkIndex = 0x67F;
 			playerRunIndex = 0x680;
@@ -218,7 +218,7 @@ public final class WeaponAnimations {
 		if (weaponName.contains("javelin") || weaponName.contains("thrownaxe")) {
 			return 806;
 		}
-		if (weaponName.contains("halberd")) {
+		if (weaponName.contains("halberd") || weaponName.contains("fuel")) {
 			return 440;
 		}
 		if (weaponName.startsWith("dragon dagger") || weaponId == 22039) {
@@ -375,7 +375,7 @@ public final class WeaponAnimations {
 			return 420;
 		if (shield.contains("shield"))
 			return 1156;
-		if(weapon.contains("scimitar") || weapon.contains("longsword") || weapon.contains("katana") || weapon.contains("korasi") || weapon.contains("tempest"))
+		if(weapon.contains("scimitar") || weapon.contains("fuel") || weapon.contains("longsword") || weapon.contains("katana") || weapon.contains("korasi") || weapon.contains("tempest"))
 			return 15074;
 		switch (weaponId) {
 		case 4755:
