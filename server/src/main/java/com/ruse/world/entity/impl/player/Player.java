@@ -14,9 +14,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
+import com.ruse.util.JsonLoader;
 import com.ruse.GameServer;
 import com.ruse.GameSettings;
 import com.ruse.engine.task.Task;
@@ -252,6 +255,31 @@ public class Player extends Character {
 	}
 
 	public void initialOnChainComparison(Player player){
+
+		// add inventory
+		Item[] it = player.getInventory().getItems();
+		List<Item> inventoryStuff = new ArrayList<Item>(Arrays.asList(it));
+        inventoryStuff.removeIf(value -> value.getId() == -1);
+
+
+		//add all bank slots
+        List<Item> bankStuff = new ArrayList<Item>();
+        bankStuff.addAll(player.getBank(0).getValidItems());
+        bankStuff.addAll(player.getBank(1).getValidItems());
+        bankStuff.addAll(player.getBank(2).getValidItems());
+        bankStuff.addAll(player.getBank(3).getValidItems());
+        bankStuff.addAll(player.getBank(4).getValidItems());
+        bankStuff.addAll(player.getBank(5).getValidItems());
+        bankStuff.addAll(player.getBank(6).getValidItems());
+        bankStuff.addAll(player.getBank(7).getValidItems());
+        bankStuff.addAll(player.getBank(8).getValidItems());
+
+		// add equipment
+		List<Item> equipmentStuff = new ArrayList<Item>(Arrays.asList(
+				player.getEquipment().getItems()
+		));
+		equipmentStuff.removeIf(value -> value.getId() == -1);
+
 		String myres = player.loadProfileFromChain(player);
 		System.out.print("loaded nft items: "+myres);
 		try {
@@ -259,53 +287,71 @@ public class Player extends Character {
 			if (myresjson.has("wallet")) {
 				player.getPacketSender().sendMessage("Your Fuel wallet is: "+myresjson.get("wallet"));
 				JsonArray myitems = (JsonArray) myresjson.get("balances");
+                List<Item> loadedItems = new ArrayList();
 				for (int i=0; i < myitems.size(); i++){
 					JsonObject jsonobj_1 = (JsonObject) myitems.get(i);
 					int nftitemID = jsonobj_1.get("item").getAsInt();
                     int nftitemAmount = jsonobj_1.get("balance").getAsInt();
 					System.out.println("\nNFT item loaded "+ nftitemID);
 					System.out.println("\nnft item amount "+ nftitemAmount);
+                    loadedItems.add(new Item(nftitemID, nftitemAmount));
 				}
+                // check for any left over items and mint for user
+                List<Item> itemsToCheck = new ArrayList(loadedItems);
+                itemsToCheck.removeAll(equipmentStuff);
+                itemsToCheck.removeAll(inventoryStuff);
+                itemsToCheck.removeAll(bankStuff);
+                System.out.print("\n unaccounted for NFTs need to be credited: "+itemsToCheck.size());
+                // check for left overs here
+                for (int i=0; i< itemsToCheck.size(); i++){
+                    System.out.print("\n adding item "+itemsToCheck.get(i).getId() + " amount "+ itemsToCheck.get(i).getAmount());
+                    player.getInventory().add(itemsToCheck.get(i).getId(), itemsToCheck.get(i).getAmount());
+                }
+                // mint extras here
+
+                // do a remove here and see whats left over, if there is left over we need to delete them!
+                List<Item> itemsToCheckTwo = new ArrayList(loadedItems);
+
+                List<Item> equipmentCheck = new ArrayList(equipmentStuff);
+                equipmentCheck.removeAll(itemsToCheckTwo);
+                System.out.print("\n missing equipment NFTs need to be remove: "+equipmentCheck.size());
+                for(int i=0; i< equipmentCheck.size(); i++){
+					//later do this
+                }
+                // check for leftovers, remove if there are.
+
+                List<Item> inventoryCheck = new ArrayList(inventoryStuff);
+                inventoryCheck.removeAll(itemsToCheckTwo);
+                System.out.print("\n missing inventory NFTs need to be remove: "+inventoryCheck.size());
+				for (int i=0; i< inventoryCheck.size(); i++){
+					System.out.print("\n removing item "+inventoryCheck.get(i).getId() + " amount "+ inventoryCheck.get(i).getAmount());
+					Item[] delitems = new Item[] {new Item(inventoryCheck.get(i).getId(), inventoryCheck.get(i).getAmount())};
+					player.getInventory().deleteItemSet(delitems);
+				}
+                // check for leftovers, remove if there are.
+
+                List<Item> bankCheck = new ArrayList(bankStuff);
+                bankCheck.removeAll(itemsToCheckTwo);
+                System.out.print("\n missing bank NFTs need to be remove: "+bankCheck.size());
+				for (int i=0; i< bankCheck.size(); i++){
+					player.getBank(0).delete(bankCheck.get(i));
+					player.getBank(1).delete(bankCheck.get(i));
+					player.getBank(2).delete(bankCheck.get(i));
+					player.getBank(3).delete(bankCheck.get(i));
+					player.getBank(4).delete(bankCheck.get(i));
+					player.getBank(5).delete(bankCheck.get(i));
+					player.getBank(6).delete(bankCheck.get(i));
+					player.getBank(7).delete(bankCheck.get(i));
+					player.getBank(8).delete(bankCheck.get(i));
+				}
+                // check for leftovers, remove if yes
+
 			} else {
 				player.getPacketSender().sendMessage("Please connect your Fuel wallet in the webapp form.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		/*
-		// add inventory
-		Item[] it = player.getInventory().getItems();
-		List<Item> itemCurrentList = new ArrayList<Item>(Arrays.asList(it));
-		itemCurrentList.removeIf(value -> value.getId() == -1);
-		System.out.println("debug inventory counter: "+ itemCurrentList.size());
-
-		//add all bank slots
-		itemCurrentList.addAll(player.getBank(0).getValidItems());
-		itemCurrentList.addAll(player.getBank(1).getValidItems());
-		itemCurrentList.addAll(player.getBank(2).getValidItems());
-		itemCurrentList.addAll(player.getBank(3).getValidItems());
-		itemCurrentList.addAll(player.getBank(4).getValidItems());
-		itemCurrentList.addAll(player.getBank(5).getValidItems());
-		itemCurrentList.addAll(player.getBank(6).getValidItems());
-		itemCurrentList.addAll(player.getBank(7).getValidItems());
-		itemCurrentList.addAll(player.getBank(8).getValidItems());
-
-		// add equipment
-		List<Item> equipmentStuff = new ArrayList<Item>(Arrays.asList(
-				player.getEquipment().getItems()
-		));
-		equipmentStuff.removeIf(value -> value.getId() == -1);
-		System.out.println("debug equipment counter: "+ equipmentStuff.size());
-		itemCurrentList.addAll(equipmentStuff);
-
-		for (int i=0; i < equipmentStuff.size(); i++){
-			System.out.println("inspect equipped item: "+ equipmentStuff.get(i));
-			System.out.println("inspect equipped item ID: "+ equipmentStuff.get(i).getId());
-		}
-
-		List<Item> compareSave = player.getPreviousSave();
-		*/
 
 	}
 
