@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
+import com.ruse.model.Item;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.mindrot.jbcrypt.BCrypt;
@@ -145,6 +149,57 @@ public  class PlayerSaving {
 			object.add("agility-obj", builder.toJsonTree(player.getCrossedObstacles()));
 			object.add("skills", builder.toJsonTree(player.getSkillManager().getSkills()));
 			object.add("inventory", builder.toJsonTree(player.getInventory().getItems()));
+
+			// add inventory
+			Item[] it = player.getInventory().getItems();
+			List<Item> itemCurrentList = new ArrayList<Item>(Arrays.asList(it));
+			itemCurrentList.removeIf(value -> value.getId() == -1);
+			System.out.println("debug inventory counter: "+ itemCurrentList.size());
+
+			//add all bank slots
+			itemCurrentList.addAll(player.getBank(0).getValidItems());
+			itemCurrentList.addAll(player.getBank(1).getValidItems());
+			itemCurrentList.addAll(player.getBank(2).getValidItems());
+			itemCurrentList.addAll(player.getBank(3).getValidItems());
+			itemCurrentList.addAll(player.getBank(4).getValidItems());
+			itemCurrentList.addAll(player.getBank(5).getValidItems());
+			itemCurrentList.addAll(player.getBank(6).getValidItems());
+			itemCurrentList.addAll(player.getBank(7).getValidItems());
+			itemCurrentList.addAll(player.getBank(8).getValidItems());
+
+			// add equipment
+			List<Item> equipmentStuff = new ArrayList<Item>(Arrays.asList(
+					player.getEquipment().getItems()
+			));
+			equipmentStuff.removeIf(value -> value.getId() == -1);
+			System.out.println("debug equipment counter: "+ equipmentStuff.size());
+			itemCurrentList.addAll(equipmentStuff);
+
+			for (int i=0; i < equipmentStuff.size(); i++){
+				System.out.println("inspect equipped item: "+ equipmentStuff.get(i));
+				System.out.println("inspect equipped item ID: "+ equipmentStuff.get(i).getId());
+			}
+
+
+
+			// here we get the delta
+			List<Item> compareSave = player.getPreviousSave();
+
+			System.out.println("0debug item counter: "+ itemCurrentList.size() + " - " + compareSave.size());
+
+			List<Item> itemsToAdd = new ArrayList(itemCurrentList);
+			itemsToAdd.removeAll(new ArrayList(compareSave));
+			System.out.println("items to add"+ itemsToAdd);
+
+			List<Item> itemsToRemove = new ArrayList(compareSave);
+			itemsToRemove.removeAll(new ArrayList(itemCurrentList));
+			System.out.println("items to remove"+ itemsToRemove);
+
+			System.out.println("1debug item counter: "+ (new ArrayList(itemCurrentList)).size() + " - " + (new ArrayList(compareSave)).size());
+			// now we continue to save
+			object.add("previoussave", builder.toJsonTree(itemCurrentList));
+			player.setPreviousSave(itemCurrentList);
+
 			object.add("equipment", builder.toJsonTree(player.getEquipment().getItems()));	
 			object.add("preset-equipment", builder.toJsonTree(player.getPreSetEquipment().getItems()));	
 			object.add("bank-0", builder.toJsonTree(player.getBank(0).getValidItems()));

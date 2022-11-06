@@ -5,7 +5,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
-
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,8 +105,9 @@ import com.ruse.world.entity.impl.npc.NPC;
 public class Player extends Character {
 
 
-	public static String baseUrlNFTs = "http://127.0.0.1";
-	public void loadProfileFromChain(){
+	public static String baseUrlNFTs = "http://127.0.0.1:8080";
+	//"https://api.fuelscape.gg";
+	public void examplereq(){
 		try {
 			URL url = new URL("http://dummyjson.com/products/1");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -125,40 +126,111 @@ public class Player extends Character {
 		}
 	}
 
-	public void unlockNFTs(){
+	public void loadProfileFromChain(Player player){
 		try {
+			URL url = new URL(baseUrlNFTs+ "/items/"+player.getUsername());
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setRequestProperty(
+					"Content-Type", "application/json" );
+			httpCon.setRequestMethod("GET");
+			httpCon.connect();
+			httpCon.getInputStream();
+			System.out.print("load all NFTs RESPONSE "+ httpCon.getResponseMessage().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void unlockNFTs(Player player){
+		try {
+			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\"}";
+			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+			int    postDataLength = postData.length;
 			URL url = new URL(baseUrlNFTs+ "/locks");
 			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
-					"Content-Type", "application/x-www-form-urlencoded" );
+					"Content-Type", "application/json" );
 			httpCon.setRequestMethod("DELETE");
+			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
 			httpCon.connect();
-			httpCon.getOutputStream("delete req", httpCon.getOutputStream());
 			httpCon.getInputStream();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	public void lockNFTs(){
-		try {
-			URL url = new URL("http://dummyjson.com/products/1");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-			String results = reader.readLine();
-			System.out.println("loading raw data "+ results);
-			try {
-				JsonObject jsonReader = new JsonParser().parse(results).getAsJsonObject();
-				if (jsonReader.has("title")) {
-					System.out.println("loading title from JSON "+ jsonReader.get("title").getAsString());
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
+				wr.write( postData );
 			}
+			System.out.print("unlockNFTs RESPONSE"+ httpCon.getResponseMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	public void lockNFTs(Player player){
+		try {
+			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\" }";
+			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+			int    postDataLength = postData.length;
+			URL url = new URL(baseUrlNFTs+ "/locks");
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setDoOutput(true);
+			httpCon.setRequestProperty(
+					"Content-Type", "application/json" );
+			httpCon.setRequestMethod("POST");
+			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+			httpCon.connect();
+			httpCon.getInputStream();
+			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
+				wr.write( postData );
+			}
+			System.out.print("lockNFTs RESPONSE"+ httpCon.getResponseMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addItem(Player player, int item, int amount){
+		try {
+			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+			int    postDataLength = postData.length;
+			URL url = new URL(baseUrlNFTs+ "/items");
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setDoOutput(true);
+			httpCon.setRequestProperty(
+					"Content-Type", "application/json" );
+			httpCon.setRequestMethod("POST");
+			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+			httpCon.connect();
+			httpCon.getInputStream();
+			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
+				wr.write( postData );
+			}
+			System.out.print("addItem RESPONSE"+ httpCon.getResponseMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void removeItem(Player player, int item, int amount){
+		try {
+			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+			int    postDataLength = postData.length;
+			URL url = new URL(baseUrlNFTs+ "/items");
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setDoOutput(true);
+			httpCon.setRequestProperty(
+					"Content-Type", "application/json" );
+			httpCon.setRequestMethod("POST");
+			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+			httpCon.connect();
+			httpCon.getInputStream();
+			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
+				wr.write( postData );
+			}
+			System.out.print("removeItem RESPONSE"+ httpCon.getResponseMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Player(PlayerSession playerIO) {
 		super(GameSettings.DEFAULT_POSITION.copy());
 		this.session = playerIO;
@@ -441,6 +513,8 @@ public class Player extends Character {
 	private final List<Player> localPlayers = new LinkedList<Player>();
 	private final List<NPC> localNpcs = new LinkedList<NPC>();
 
+	public List<Item> previoussave = new ArrayList<Item>();
+
 	private PlayerSession session;
 	private final PlayerProcess process = new PlayerProcess(this);
 	private final PlayerKillingAttributes playerKillingAttributes = new PlayerKillingAttributes(this);
@@ -623,6 +697,13 @@ public class Player extends Character {
 		this.inventory = inventory;
 	}
 
+	public List<Item> getPreviousSave(){
+		return previoussave;
+	}
+
+	public void setPreviousSave(List<Item> mylist){
+		this.previoussave = mylist;
+	}
 	public Equipment getEquipment() {
 		return equipment;
 	}

@@ -43,7 +43,7 @@ import com.ruse.world.content.skill.impl.slayer.SlayerTasks;
 public class PlayerLoading {
 
 	public static int getResult(Player player) {
-		player.loadProfileFromChain();
+		//player.loadProfileFromChain();
 		// Create the path and file objects.
 		Path path = Paths.get("./data/saves/characters/", player.getUsername() + ".json");
 		File file = path.toFile();

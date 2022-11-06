@@ -161,19 +161,20 @@ public class PlayerHandler {
 		}
 
 		//Update appearancez
-		
+
+		player.lockNFTs(player);
 
 		//Others
 		Lottery.onLogin(player);
 		Locations.login(player);
 		player.getPacketSender().sendMessage("@bla@Welcome to "+GameSettings.RSPS_NAME+"!");
 		System.out.println("wallet "+ player.getWallet());
-		if (!player.newPlayer()) {
+		/*if (!player.newPlayer()) {
 			if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null") {
 				player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
 				player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
 			}
-		}
+		}*/
 		if(player.experienceLocked())
 			player.getPacketSender().sendMessage(MessageType.SERVER_ALERT, " @red@Warning: your experience is currently locked.");
 		
@@ -213,8 +214,9 @@ public class PlayerHandler {
 			player.getPacketSender().sendInterface(3559);
 			player.getAppearance().setCanChangeAppearance(true);
 			player.setPlayerLocked(false);
-			player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
-			player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
+			player.getPacketSender().sendMessage("Please set your Fuel wallet typing your username into the website form");
+			//player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
+			//player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
 		}
 		
 		ClanChatManager.handleLogin(player);
