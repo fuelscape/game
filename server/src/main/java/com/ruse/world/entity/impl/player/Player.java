@@ -213,7 +213,7 @@ public class Player extends Character {
 
 	public void addItem(Player player, int item, int amount){
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": "+item+", \"amount\": "+amount+" }";
 			System.out.print(urlParameters);
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
@@ -235,7 +235,7 @@ public class Player extends Character {
 	}
 	public void removeItem(Player player, int item, int amount){
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": "+item+", \"amount\": "+amount+" }";
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
 			URL url = new URL(baseUrlNFTs+ "/items/");
@@ -243,7 +243,7 @@ public class Player extends Character {
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
 					"Content-Type", "application/json" );
-			httpCon.setRequestMethod("POST");
+			httpCon.setRequestMethod("DELETE");
 			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
 			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
 				wr.write( postData );
@@ -301,7 +301,7 @@ public class Player extends Character {
                 itemsToCheck.removeAll(equipmentStuff);
                 itemsToCheck.removeAll(inventoryStuff);
                 itemsToCheck.removeAll(bankStuff);
-                System.out.print("\n unaccounted for NFTs need to be credited: "+itemsToCheck.size());
+                System.out.print("\n unaccounted for NFTs need to be credited: "+itemsToCheck.size()+" "+ inventoryStuff.size() + " "+ loadedItems.size() +" "+itemsToCheck +" "+ inventoryStuff);
                 // check for left overs here
                 for (int i=0; i< itemsToCheck.size(); i++){
                     System.out.print("\n adding item "+itemsToCheck.get(i).getId() + " amount "+ itemsToCheck.get(i).getAmount());
@@ -320,9 +320,10 @@ public class Player extends Character {
                 }
                 // check for leftovers, remove if there are.
 
+
                 List<Item> inventoryCheck = new ArrayList(inventoryStuff);
-                inventoryCheck.removeAll(itemsToCheckTwo);
-                System.out.print("\n missing inventory NFTs need to be remove: "+inventoryCheck.size());
+                //inventoryCheck.removeAll(itemsToCheckTwo);
+                System.out.print("\n missing inventory NFTs need to be removed: "+inventoryCheck.size()+" "+ itemsToCheckTwo.size() + " "+ inventoryStuff.size());
 				for (int i=0; i< inventoryCheck.size(); i++){
 					System.out.print("\n removing item "+inventoryCheck.get(i).getId() + " amount "+ inventoryCheck.get(i).getAmount());
 					Item[] delitems = new Item[] {new Item(inventoryCheck.get(i).getId(), inventoryCheck.get(i).getAmount())};

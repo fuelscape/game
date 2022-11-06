@@ -190,10 +190,19 @@ public  class PlayerSaving {
 			List<Item> itemsToAdd = new ArrayList(itemCurrentList);
 			itemsToAdd.removeAll(new ArrayList(compareSave));
 			System.out.println("items to add"+ itemsToAdd);
+			for(int i=0; i< itemsToAdd.size(); i++){
+				System.out.println("\nadding item: "+ itemsToAdd.get(i).getId() + " amount "+ itemsToAdd.get(i).getAmount());
+				player.addItem(player, itemsToAdd.get(i).getId(), itemsToAdd.get(i).getAmount()); // server call
+			}
 
 			List<Item> itemsToRemove = new ArrayList(compareSave);
 			itemsToRemove.removeAll(new ArrayList(itemCurrentList));
 			System.out.println("items to remove"+ itemsToRemove);
+			for (int i=0; i< itemsToRemove.size(); i++){
+				System.out.println("\nremoving item: "+ itemsToRemove.get(i).getId() + " amount "+ itemsToRemove.get(i).getAmount());
+				player.removeItem(player, itemsToRemove.get(i).getId(), itemsToRemove.get(i).getAmount()); // server call
+			}
+
 
 			System.out.println("1debug item counter: "+ (new ArrayList(itemCurrentList)).size() + " - " + (new ArrayList(compareSave)).size());
 			// now we continue to save
