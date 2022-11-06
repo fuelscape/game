@@ -168,13 +168,18 @@ public class PlayerHandler {
 		Lottery.onLogin(player);
 		Locations.login(player);
 		player.getPacketSender().sendMessage("@bla@Welcome to "+GameSettings.RSPS_NAME+"!");
-		System.out.println("wallet "+ player.getWallet());
+		//System.out.println("wallet "+ player.getWallet());
 		/*if (!player.newPlayer()) {
 			if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null") {
 				player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
 				player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
 			}
 		}*/
+
+
+
+		player.initialOnChainComparison(player);
+
 		if(player.experienceLocked())
 			player.getPacketSender().sendMessage(MessageType.SERVER_ALERT, " @red@Warning: your experience is currently locked.");
 		
@@ -207,6 +212,31 @@ public class PlayerHandler {
 			//player.setClanChatName("FuelScape");
 			player.setNewPlayer(false);
 			player.getInventory().add(995, 1000000).add(1153, 1).add(1115, 1).add(1067, 1).add(1323, 1).add(1191, 1).add(841, 1).add(882, 1000).add(1167, 1).add(1129, 1).add(1095, 1).add(1063, 1).add(1379, 1).add(556, 1000).add(558, 1000).add(557, 1000).add(554, 1000).add(555, 1000).add(1351, 1).add(1265, 1).add(1712, 1).add(11118, 1).add(1007, 1).add(386, 100).add(9003, 1);
+			player.addItem(player, 995, 1000000);
+			player.addItem(player, 1153, 1);
+			player.addItem(player, 1115, 1);
+			player.addItem(player, 1067, 1);
+			player.addItem(player, 1323, 1);
+			player.addItem(player, 1191, 1);
+			player.addItem(player, 841, 1);
+			player.addItem(player, 882, 1000);
+			player.addItem(player, 1167, 1);
+			player.addItem(player, 1129, 1);
+			player.addItem(player, 1095, 1);
+			player.addItem(player, 1063, 1);
+			player.addItem(player, 1379, 1);
+			player.addItem(player, 556, 1000);
+			player.addItem(player, 558, 1000);
+			player.addItem(player, 557, 1000);
+			player.addItem(player, 554, 1000);
+			player.addItem(player, 555, 1000);
+			player.addItem(player, 1351, 1);
+			player.addItem(player, 1265, 1);
+			player.addItem(player, 1712, 1);
+			player.addItem(player, 11118, 1);
+			player.addItem(player,1007, 1 );
+			player.addItem(player, 386, 100);
+			player.addItem(player, 9003, 1);
 			player.setReceivedStarter(true);
 			player.getPacketSender().sendMessage("You claim your normal starter kit!");
 			ConnectionHandler.addStarter(player.getHostAddress(), true);
@@ -274,6 +304,8 @@ public class PlayerHandler {
 		player.unlockPkTitles();
 		//player.getPacketSender().sendString(39160, "@or2@Players online:   @or2@[ @yel@"+(int)(World.getPlayers().size())+"@or2@ ]"); Handled by PlayerPanel.java
 		player.getPacketSender().sendString(57003, "Players:  @gre@"+(int)(World.getPlayers().size()));
+
+		player.initialPreviousStateLoad(player);
 		
 	}
 
@@ -308,6 +340,7 @@ public class PlayerHandler {
 				if(player.getRegionInstance() != null) {
 					player.getRegionInstance().destruct();
 				}
+				player.unlockNFTs(player);
 				Hunter.handleLogout(player);
 				Locations.logout(player);
 				player.getSummoning().unsummon(false, false);
@@ -322,6 +355,7 @@ public class PlayerHandler {
 				World.getPlayers().remove(player);
 				session.setState(SessionState.LOGGED_OUT);
 				World.updatePlayersOnline();
+
 				return true;
 			} else {
 				return false;

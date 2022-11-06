@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
 import com.ruse.GameServer;
 import com.ruse.GameSettings;
 import com.ruse.engine.task.Task;
@@ -105,7 +107,7 @@ import com.ruse.world.entity.impl.npc.NPC;
 public class Player extends Character {
 
 
-	public static String baseUrlNFTs = "http://127.0.0.1:8080";
+	public static String baseUrlNFTs = "https://api.fuelscape.gg"; //"http://127.0.0.1:8080";
 	//"https://api.fuelscape.gg";
 	public void examplereq(){
 		try {
@@ -126,61 +128,81 @@ public class Player extends Character {
 		}
 	}
 
-	public void loadProfileFromChain(Player player){
+	public String loadProfileFromChain(Player player){
+
+		HttpURLConnection c = null;
 		try {
-			URL url = new URL(baseUrlNFTs+ "/items/"+player.getUsername());
-			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-			httpCon.setRequestProperty(
-					"Content-Type", "application/json" );
-			httpCon.setRequestMethod("GET");
-			httpCon.connect();
-			httpCon.getInputStream();
-			System.out.print("load all NFTs RESPONSE "+ httpCon.getResponseMessage().toString());
+			URL u = new URL(baseUrlNFTs+ "/items/"+player.getUsername().toLowerCase());
+			c = (HttpURLConnection) u.openConnection();
+			c.setRequestMethod("GET");
+			c.setRequestProperty("Content-length", "0");
+			c.setUseCaches(false);
+			c.setAllowUserInteraction(false);
+			c.connect();
+			int status = c.getResponseCode();
+			System.out.print("\nload all NFTs RESPONSE "+ c.getResponseMessage());
+
+			switch (status) {
+				case 200:
+				case 201:
+					BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+					StringBuilder sb = new StringBuilder();
+					String line;
+					while ((line = br.readLine()) != null) {
+						sb.append(line+"\n");
+					}
+					br.close();
+					return sb.toString();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+
 	}
 
 	public void unlockNFTs(Player player){
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\"}";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\"}";
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
-			URL url = new URL(baseUrlNFTs+ "/locks");
+			URL url = new URL(baseUrlNFTs+ "/locks/");
 			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
 					"Content-Type", "application/json" );
 			httpCon.setRequestMethod("DELETE");
-			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-			httpCon.connect();
-			httpCon.getInputStream();
+			//httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+			//httpCon.connect();
+			//httpCon.getInputStream();
 			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
 				wr.write( postData );
 			}
-			System.out.print("unlockNFTs RESPONSE"+ httpCon.getResponseMessage());
+			System.out.print("\nunlockNFTs RESPONSE"+ httpCon.getResponseMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public void lockNFTs(Player player){
+		//System.out.print("{ \"player\": \""+player.getUsername().toLowerCase()+"\" }");
+		//System.out.print(baseUrlNFTs+ "/locks/");
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\" }";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\" }";
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
-			URL url = new URL(baseUrlNFTs+ "/locks");
+			URL url = new URL(baseUrlNFTs+ "/locks/");
 			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
 					"Content-Type", "application/json" );
 			httpCon.setRequestMethod("POST");
-			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-			httpCon.connect();
-			httpCon.getInputStream();
+			// httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+			//httpCon.connect();
+			//httpCon.getInputStream();
 			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
 				wr.write( postData );
 			}
-			System.out.print("lockNFTs RESPONSE"+ httpCon.getResponseMessage());
+			System.out.print("\nlockNFTs RESPONSE"+ httpCon.getResponseMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,48 +210,156 @@ public class Player extends Character {
 
 	public void addItem(Player player, int item, int amount){
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			System.out.print(urlParameters);
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
-			URL url = new URL(baseUrlNFTs+ "/items");
+			URL url = new URL(baseUrlNFTs+ "/items/");
+			System.out.print(url);
 			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
 					"Content-Type", "application/json" );
 			httpCon.setRequestMethod("POST");
 			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-			httpCon.connect();
-			httpCon.getInputStream();
 			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
 				wr.write( postData );
 			}
-			System.out.print("addItem RESPONSE"+ httpCon.getResponseMessage());
+			System.out.print("\naddItem RESPONSE"+ httpCon.getResponseMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public void removeItem(Player player, int item, int amount){
 		try {
-			String urlParameters  = "{ \"player\": \""+player.getUsername()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
+			String urlParameters  = "{ \"player\": \""+player.getUsername().toLowerCase()+"\", \"item\": \""+item+"\", \"amount\": \""+amount+"\" }";
 			byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
 			int    postDataLength = postData.length;
-			URL url = new URL(baseUrlNFTs+ "/items");
+			URL url = new URL(baseUrlNFTs+ "/items/");
 			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setDoOutput(true);
 			httpCon.setRequestProperty(
 					"Content-Type", "application/json" );
 			httpCon.setRequestMethod("POST");
 			httpCon.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-			httpCon.connect();
-			httpCon.getInputStream();
 			try( DataOutputStream wr = new DataOutputStream( httpCon.getOutputStream())) {
 				wr.write( postData );
 			}
-			System.out.print("removeItem RESPONSE"+ httpCon.getResponseMessage());
+			System.out.print("\nremoveItem RESPONSE"+ httpCon.getResponseMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void initialOnChainComparison(Player player){
+		String myres = player.loadProfileFromChain(player);
+		System.out.print("loaded nft items: "+myres);
+		try {
+			JsonObject myresjson = new JsonParser().parse(myres).getAsJsonObject();
+			if (myresjson.has("wallet")) {
+				player.getPacketSender().sendMessage("Your Fuel wallet is: "+myresjson.get("wallet"));
+				JsonArray myitems = (JsonArray) myresjson.get("balances");
+				for (int i=0; i < myitems.size(); i++){
+					JsonObject jsonobj_1 = (JsonObject) myitems.get(i);
+					int nftitemID = jsonobj_1.get("item").getAsInt();
+                    int nftitemAmount = jsonobj_1.get("balance").getAsInt();
+					System.out.println("\nNFT item loaded "+ nftitemID);
+					System.out.println("\nnft item amount "+ nftitemAmount);
+				}
+			} else {
+				player.getPacketSender().sendMessage("Please connect your Fuel wallet in the webapp form.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		/*
+		// add inventory
+		Item[] it = player.getInventory().getItems();
+		List<Item> itemCurrentList = new ArrayList<Item>(Arrays.asList(it));
+		itemCurrentList.removeIf(value -> value.getId() == -1);
+		System.out.println("debug inventory counter: "+ itemCurrentList.size());
+
+		//add all bank slots
+		itemCurrentList.addAll(player.getBank(0).getValidItems());
+		itemCurrentList.addAll(player.getBank(1).getValidItems());
+		itemCurrentList.addAll(player.getBank(2).getValidItems());
+		itemCurrentList.addAll(player.getBank(3).getValidItems());
+		itemCurrentList.addAll(player.getBank(4).getValidItems());
+		itemCurrentList.addAll(player.getBank(5).getValidItems());
+		itemCurrentList.addAll(player.getBank(6).getValidItems());
+		itemCurrentList.addAll(player.getBank(7).getValidItems());
+		itemCurrentList.addAll(player.getBank(8).getValidItems());
+
+		// add equipment
+		List<Item> equipmentStuff = new ArrayList<Item>(Arrays.asList(
+				player.getEquipment().getItems()
+		));
+		equipmentStuff.removeIf(value -> value.getId() == -1);
+		System.out.println("debug equipment counter: "+ equipmentStuff.size());
+		itemCurrentList.addAll(equipmentStuff);
+
+		for (int i=0; i < equipmentStuff.size(); i++){
+			System.out.println("inspect equipped item: "+ equipmentStuff.get(i));
+			System.out.println("inspect equipped item ID: "+ equipmentStuff.get(i).getId());
+		}
+
+		List<Item> compareSave = player.getPreviousSave();
+		*/
+
+	}
+
+
+
+	public void initialPreviousStateLoad(Player player){
+		// add inventory
+		Item[] it = player.getInventory().getItems();
+		List<Item> itemCurrentList = new ArrayList<Item>(Arrays.asList(it));
+		itemCurrentList.removeIf(value -> value.getId() == -1);
+		System.out.println("debug inventory counter: "+ itemCurrentList.size());
+
+		//add all bank slots
+		itemCurrentList.addAll(player.getBank(0).getValidItems());
+		itemCurrentList.addAll(player.getBank(1).getValidItems());
+		itemCurrentList.addAll(player.getBank(2).getValidItems());
+		itemCurrentList.addAll(player.getBank(3).getValidItems());
+		itemCurrentList.addAll(player.getBank(4).getValidItems());
+		itemCurrentList.addAll(player.getBank(5).getValidItems());
+		itemCurrentList.addAll(player.getBank(6).getValidItems());
+		itemCurrentList.addAll(player.getBank(7).getValidItems());
+		itemCurrentList.addAll(player.getBank(8).getValidItems());
+
+		// add equipment
+		List<Item> equipmentStuff = new ArrayList<Item>(Arrays.asList(
+				player.getEquipment().getItems()
+		));
+		equipmentStuff.removeIf(value -> value.getId() == -1);
+		System.out.println("debug equipment counter: "+ equipmentStuff.size());
+		itemCurrentList.addAll(equipmentStuff);
+
+		for (int i=0; i < equipmentStuff.size(); i++){
+			System.out.println("inspect equipped item: "+ equipmentStuff.get(i));
+			System.out.println("inspect equipped item ID: "+ equipmentStuff.get(i).getId());
+		}
+
+		// here we get the delta
+		List<Item> compareSave = player.getPreviousSave();
+
+		System.out.println("0debug item counter: "+ itemCurrentList.size() + " - " + compareSave.size());
+
+		List<Item> itemsToAdd = new ArrayList(itemCurrentList);
+		itemsToAdd.removeAll(new ArrayList(compareSave));
+		System.out.println("items to add"+ itemsToAdd);
+
+		List<Item> itemsToRemove = new ArrayList(compareSave);
+		itemsToRemove.removeAll(new ArrayList(itemCurrentList));
+		System.out.println("items to remove"+ itemsToRemove);
+
+		System.out.println("1debug item counter: "+ (new ArrayList(itemCurrentList)).size() + " - " + (new ArrayList(compareSave)).size());
+		// now we continue to save
+		player.setPreviousSave(itemCurrentList);
+	}
+
 
 	public Player(PlayerSession playerIO) {
 		super(GameSettings.DEFAULT_POSITION.copy());
