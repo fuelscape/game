@@ -1375,7 +1375,7 @@ public class Client extends GameRenderer {
 	public Client() {
 		accountManager = new AccountManager();
 		grandExchange = new GrandExchange();
-		loadingImages = new BufferedImage[4];
+		loadingImages = new BufferedImage[5];
 		menuActionCmd4 = new int[500];
 		setFullscreenInterfaceID(-1);
 		chatRights = new int[500];
@@ -7500,7 +7500,10 @@ public class Client extends GameRenderer {
 	
 	private int loadingPercentage;
 	private BufferedImage[] loadingImages;
-	
+	public void displayAfterLoadingScreen() {
+
+		super.graphics.drawImage(loadingImages[4], 0, 0, null);
+	}
 	public void displayLoadingScreen() {
 		
 		if(loadingImages[0] == null 

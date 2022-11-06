@@ -2,6 +2,7 @@
 package com.ruse.world.entity.impl.player;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -10,6 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.ruse.GameSettings;
 import com.ruse.engine.task.Task;
 import com.ruse.engine.task.TaskManager;
@@ -48,6 +53,7 @@ import com.ruse.model.input.Input;
 import com.ruse.mysql.Hiscores;
 import com.ruse.net.PlayerSession;
 import com.ruse.net.SessionState;
+import com.ruse.net.login.LoginResponses;
 import com.ruse.net.packet.PacketSender;
 import com.ruse.util.FrameUpdater;
 import com.ruse.util.Misc;
@@ -96,6 +102,27 @@ import com.ruse.world.entity.impl.npc.NPC;
 
 
 public class Player extends Character {
+
+
+
+	public void loadProfileFromChain(){
+		try {
+			URL url = new URL("http://dummyjson.com/products/1");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			String results = reader.readLine();
+			System.out.println("loading raw data "+ results);
+			try {
+				JsonObject jsonReader = new JsonParser().parse(results).getAsJsonObject();
+				if (jsonReader.has("title")) {
+					System.out.println("loading title from JSON "+ jsonReader.get("title").getAsString());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public Player(PlayerSession playerIO) {
 		super(GameSettings.DEFAULT_POSITION.copy());
@@ -1613,6 +1640,7 @@ public class Player extends Character {
 	public void setWallet(String wallet) {
 		this.wallet = wallet;
 	}
+
 	public Stopwatch getRecordedLogin() {
 		return recordedLogin;
 	}

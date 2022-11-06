@@ -1,7 +1,10 @@
 package com.ruse.world.entity.impl.player;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ import com.ruse.world.content.skill.impl.slayer.SlayerTasks;
 public class PlayerLoading {
 
 	public static int getResult(Player player) {
-
+		player.loadProfileFromChain();
 		// Create the path and file objects.
 		Path path = Paths.get("./data/saves/characters/", player.getUsername() + ".json");
 		File file = path.toFile();

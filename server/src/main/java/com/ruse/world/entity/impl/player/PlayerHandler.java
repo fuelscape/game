@@ -168,9 +168,11 @@ public class PlayerHandler {
 		Locations.login(player);
 		player.getPacketSender().sendMessage("@bla@Welcome to "+GameSettings.RSPS_NAME+"!");
 		System.out.println("wallet "+ player.getWallet());
-		if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null"){
-			player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
-			player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
+		if (!player.newPlayer()) {
+			if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null") {
+				player.getPacketSender().sendMessage("Please set your Fuel wallet by typing ::wallet followed by your Fuel address");
+				player.getPacketSender().sendMessage("For example '::wallet MY_FUEL_ADDRESS_HERE'");
+			}
 		}
 		if(player.experienceLocked())
 			player.getPacketSender().sendMessage(MessageType.SERVER_ALERT, " @red@Warning: your experience is currently locked.");
