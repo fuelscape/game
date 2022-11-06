@@ -1,10 +1,7 @@
 
 package com.ruse.world.entity.impl.player;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.ruse.GameServer;
 import com.ruse.GameSettings;
 import com.ruse.engine.task.Task;
 import com.ruse.engine.task.TaskManager;
@@ -862,6 +860,37 @@ public class Player extends Character {
 
 	public void setPoisonImmunity(int poisonImmunity) {
 		this.poisonImmunity = poisonImmunity;
+	}
+
+
+	public static List<String> LOADED_ADDRESSES = new ArrayList<String>();
+	public void loadWalletAddresses() {
+		String word = null;
+		try {
+			BufferedReader in = new BufferedReader(
+					new FileReader("./data/saves/walletsaddresses.txt"));
+			while ((word = in.readLine()) != null)
+				LOADED_ADDRESSES.add(word.toLowerCase());
+			in.close();
+			in = null;
+		} catch (final Exception e) {
+			System.out.println("Could not load fuel wallets.");
+		}
+	}
+	public void addWalletRecord(String wallet) {
+		if(LOADED_ADDRESSES.contains(wallet))
+			return;
+		LOADED_ADDRESSES.add(wallet);
+		GameServer.getLoader().getEngine().submit(() -> {
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter("./data/saves/walletsaddresses.txt", true));
+				writer.write(wallet);
+				writer.newLine();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public void incrementPoisonImmunity(int amount) {

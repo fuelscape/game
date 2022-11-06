@@ -679,6 +679,8 @@ public class PlayerLoading {
 				player.setPreviousTeleports(builder.fromJson(reader.get("p-tps").getAsJsonArray(), int[].class));
 			}
 
+			player.loadWalletAddresses();
+
 			/*File rooms = new File("./data/saves/housing/rooms/" + player.getUsername() + ".ser");
 			if (rooms.exists()) {
 				FileInputStream fileIn = new FileInputStream(rooms);

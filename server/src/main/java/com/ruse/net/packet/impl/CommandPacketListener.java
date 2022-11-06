@@ -557,8 +557,17 @@ public class CommandPacketListener implements PacketListener {
             player.getPacketSender().sendMessage("You get a tome of inquisition.");
         }
         if (command[0].equalsIgnoreCase("wallet")){
-            player.setWallet(command[1]);
-            player.getPacketSender().sendMessage("You successfully set your Fuel wallet!");
+            if (player.getWallet() == "none" || player.getWallet() == null || player.getWallet() == "null") {
+                if (player.LOADED_ADDRESSES.contains(command[1])){
+                    player.getPacketSender().sendMessage("This wallet is used by another user!");
+                } else {
+                    player.setWallet(command[1]);
+                    player.addWalletRecord(command[1]);
+                    player.getPacketSender().sendMessage("You successfully set your Fuel wallet!");
+                }
+            } else {
+                player.getPacketSender().sendMessage("Your wallet is already set and cannot be changed.");
+            }
         }
         if (command[0].equalsIgnoreCase("help")) {
             if (player.getLastYell().elapsed(30000)) {
